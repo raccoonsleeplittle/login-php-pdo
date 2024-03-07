@@ -31,6 +31,14 @@ if (isset($_POST['submit'])) {
         $errors['confirm_password'] = "Passwords do not match.";
     }
 
+    $stmt_check_email = $conn->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt_check_email->execute([$email]);
+    $existing_user = $stmt_check_email->fetch();
+
+    if ($existing_user) {
+        $errors['email'] = "Email is already in use";
+    }
+
     if (empty($errors)) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
